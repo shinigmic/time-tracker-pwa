@@ -5,6 +5,7 @@ Simple and convenient app to track daily activities and manage your time effecti
 ---
 
 ## 🚀 Technology Stack
+
 - **Frontend**: Vue 3, Pinia, Vite, Tailwind CSS
 - **Backend**: Node.js, Express.js, MongoDB (или Redis)
 - Docker & Docker Compose
@@ -13,6 +14,7 @@ Simple and convenient app to track daily activities and manage your time effecti
 ## 🛠 Installation & Usage
 
 Clone repository:
+
 ```bash
 git clone <your-repo-url>
 cd your-project
@@ -24,3 +26,17 @@ Access application at:
 
 Frontend: http://localhost:8080
 Backend: http://localhost:3000
+```
+
+## 🚀 Features
+
+- Activity tracking and quick switching
+- Daily/weekly/monthly reports
+- Responsive, mobile-first UI
+- Easy-to-use PWA on Android/iOS
+
+## 📈 Future plans
+
+- Notifications integration
+- Improved analytics & reporting
+- Data export/import
