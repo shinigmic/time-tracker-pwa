@@ -1,86 +1,113 @@
 <template>
-  <div class="timer-container">
-    <h1>{{ formattedTime }}</h1>
-    <div class="controls">
-      <button @click="start" :disabled="isRunning">Start</button>
-      <button @click="pause" :disabled="!isRunning">Pause</button>
-      <button @click="stop">Stop</button>
+  <div class="activities-container">
+    <div v-for="(activity, index) in activities" :key="index" class="activity">
+      <h2>{{ activity.name }}</h2>
+      <p>{{ formatTime(activity.elapsed) }}</p>
+      <div class="controls">
+        <button @click="startTimer(index)" :disabled="activity.isRunning">
+          Start
+        </button>
+        <button @click="pauseTimer(index)" :disabled="!activity.isRunning">
+          Pause
+        </button>
+        <button @click="stopTimer(index)">Stop</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, onUnmounted } from 'vue';
 
 export default {
   name: 'ActivityTimer',
   setup() {
-    const elapsed = ref(0); // Total elapsed seconds
-    const isRunning = ref(false); // Timer running status
-    let interval = null;
+    // Array of activities with basic fields
+    const activities = ref([
+      { name: 'Work', elapsed: 0, isRunning: false, interval: null },
+      { name: 'Rest', elapsed: 0, isRunning: false, interval: null },
+      { name: 'Reading', elapsed: 0, isRunning: false, interval: null },
+      { name: 'Meditation', elapsed: 0, isRunning: false, interval: null },
+      { name: 'House Chores', elapsed: 0, isRunning: false, interval: null },
+      { name: 'Other', elapsed: 0, isRunning: false, interval: null },
+    ]);
 
-    // Function to start the timer
-    const start = () => {
-      if (!isRunning.value) {
-        isRunning.value = true;
-        interval = setInterval(() => {
-          elapsed.value += 1;
+    // Function to start a specific activity timer
+    const startTimer = (index) => {
+      const activity = activities.value[index];
+      if (!activity.isRunning) {
+        activity.isRunning = true;
+        activity.interval = setInterval(() => {
+          activity.elapsed += 1;
         }, 1000);
       }
     };
 
-    // Function to pause the timer
-    const pause = () => {
-      if (isRunning.value) {
-        clearInterval(interval);
-        isRunning.value = false;
+    // Function to pause a specific activity timer
+    const pauseTimer = (index) => {
+      const activity = activities.value[index];
+      if (activity.isRunning) {
+        clearInterval(activity.interval);
+        activity.isRunning = false;
       }
     };
 
-    // Function to stop the timer and reset the time
-    const stop = () => {
-      clearInterval(interval);
-      elapsed.value = 0;
-      isRunning.value = false;
+    // Function to stop and reset a specific activity timer
+    const stopTimer = (index) => {
+      const activity = activities.value[index];
+      clearInterval(activity.interval);
+      activity.elapsed = 0;
+      activity.isRunning = false;
     };
 
-    // Cleanup the interval when the component is unmounted
+    // Cleanup intervals for all activities on unmount
     onUnmounted(() => {
-      clearInterval(interval);
+      activities.value.forEach((act) => {
+        clearInterval(act.interval);
+      });
     });
 
-    // Compute formatted time in HH:MM:SS format
-    const formattedTime = computed(() => {
-      const seconds = elapsed.value % 60;
-      const minutes = Math.floor(elapsed.value / 60) % 60;
-      const hours = Math.floor(elapsed.value / 3600);
-      return `${hours.toString().padStart(2, '0')}:${minutes
+    // Helper function to format elapsed time as HH:MM:SS
+    const formatTime = (seconds) => {
+      const s = seconds % 60;
+      const m = Math.floor(seconds / 60) % 60;
+      const h = Math.floor(seconds / 3600);
+      return `${h.toString().padStart(2, '0')}:${m
         .toString()
-        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    });
+        .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
 
     return {
-      formattedTime,
-      isRunning,
-      start,
-      pause,
-      stop,
+      activities,
+      startTimer,
+      pauseTimer,
+      stopTimer,
+      formatTime,
     };
   },
 };
 </script>
 
 <style scoped>
-.timer-container {
+.activities-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding-top: env(safe-area-inset-top); /* додатковий відступ зверху */
+  padding-bottom: env(
+    safe-area-inset-bottom
+  ); /* відступ знизу, якщо потрібно */
+}
+
+.activity {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .controls {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 button {
