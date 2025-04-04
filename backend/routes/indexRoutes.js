@@ -1,18 +1,19 @@
 const express = require('express');
 
-const rootRouter = require('./rootRoutes.js');
-const loginRouter = require('./loginRoutes.js');
-const registerRouter = require('./registerRoutes.js');
-const userRouter = require('./userRoutes.js');
-const activityTypesRouter = require('./activityTypeRoutes.js');
-const timeEntryRoutes = require('./timeEntryRoutes.js');
+const rootRouter = require('./rootRoutes');
+const loginRouter = require('./loginRoutes');
+const registerRouter = require('./registerRoutes');
+const userRouter = require('./userRoutes');
+const activityTypesRouter = require('./activityTypeRoutes');
+const timeEntryRoutes = require('./timeEntryRoutes');
+const statisticsRoutes = require('./statisticsRoutes');
 
 const router = express.Router();
 
-const { checkAuth } = require('../middleware/checkAuth.js');
-const { checkToken } = require('../middleware/checkToken.js');
-const globalRateLimiter = require('../middleware/globalRateLimiter.js');
-const registerLimiter = require('../middleware/registerLimiter.js');
+const { checkAuth } = require('../middleware/checkAuth');
+const { checkToken } = require('../middleware/checkToken');
+const globalRateLimiter = require('../middleware/globalRateLimiter');
+const registerLimiter = require('../middleware/registerLimiter');
 router.use(globalRateLimiter);
 
 // If your middleware is registered before certain routes, it will be applied to all subsequent routes.
@@ -28,5 +29,6 @@ router.use(checkToken);
 router.use('/user', userRouter);
 router.use('/activity-types', activityTypesRouter);
 router.use('/time-entries', timeEntryRoutes);
+router.use('/stats', statisticsRoutes);
 
 module.exports = router;
