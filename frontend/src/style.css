@@ -1,79 +1,53 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
-}
-
+/* Ensure the app takes up full height and removes default margins/padding */
+html,
+body,
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafc; /* Light background color */
+  font-family: 'Roboto', sans-serif; /* Vuetify recommended font */
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Vuetify main application container */
+.v-application {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The main content area inside <v-main> */
+.v-main {
+  flex: 1 0 auto; /* let the main content grow */
+}
+
+/* Container inside <v-main> */
+.v-main__wrap {
+  padding: 0 !important;
+}
+
+/* Optional: some spacing for <v-container> inside .v-main */
+.v-main .v-container {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+/* Footer stays at the bottom */
+.v-footer {
+  flex-shrink: 0;
+}
+
+/* Example: If you want to style the navigation drawer (temporary or permanent) */
+.v-navigation-drawer {
+  /* background-color: #ffffff; */
+}
+
+/* Example: If you want to style the app bar */
+.v-app-bar {
+  /* background-color: #2196f3;  */
+}
+
+/* Buttons or other elements can be customized here as well */
+.v-btn {
+  text-transform: none; /* Keep text as typed, not uppercase */
 }
