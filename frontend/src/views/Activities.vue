@@ -6,48 +6,28 @@
         <h1>Welcome, {{ userEmail }}</h1>
         <!-- Here you can add components or content for displaying user's activities -->
         <p>This is the main page where your activities are displayed.</p>
+        <!-- Example logout button -->
+        <v-btn color="primary" @click="logout">Logout</v-btn>
       </v-container>
     </v-main>
   </v-app>
 </template>
 
-<script>
-export default {
-  name: 'Activities',
-  data() {
-    return {
-      drawer: false,
-      navItems: [
-        {
-          title: 'Activities',
-          to: { name: 'Activities' },
-          icon: 'mdi-calendar',
-        },
-        {
-          title: 'Activity Types',
-          to: { name: 'ActivityTypesEditor' },
-          icon: 'mdi-format-list-bulleted',
-        },
-        {
-          title: 'Statistics',
-          to: { name: 'StatisticsTable' },
-          icon: 'mdi-chart-line',
-        },
-      ],
-    };
-  },
-  computed: {
-    userEmail() {
-      return localStorage.getItem('userEmail') || 'User';
-    },
-  },
-  methods: {
-    logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userEmail');
-      this.$router.push({ name: 'Login' });
-    },
-  },
+<script setup>
+import { computed } from 'vue';
+import { useAuthStore } from '../stores/auth'; // Adjust path if needed
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Create computed properties to derive reactive data from store
+const userEmail = computed(() => authStore.userEmail || 'User');
+
+// Logout method: calls store's logout action and navigates to Login page
+const logout = () => {
+  authStore.logout();
+  router.push({ name: 'Login' });
 };
 </script>
 

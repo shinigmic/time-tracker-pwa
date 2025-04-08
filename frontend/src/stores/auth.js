@@ -9,12 +9,28 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: (state) => !!state.token,
   },
   actions: {
-    login(token, email) {
-      this.token = token;
+    async login(email, password) {
+      const credentials = btoa(`${email}:${password}`);
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'GET',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Login failed');
+      }
+
+      const data = await response.json();
+      this.token = data.token;
       this.userEmail = email;
-      localStorage.setItem('token', token);
+
+      localStorage.setItem('token', data.token);
       localStorage.setItem('userEmail', email);
     },
+
     logout() {
       this.token = null;
       this.userEmail = null;

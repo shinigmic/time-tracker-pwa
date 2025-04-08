@@ -12,20 +12,20 @@
                   label="Email"
                   type="email"
                   required
-                ></v-text-field>
+                />
                 <v-text-field
                   v-model="password"
                   label="Password"
                   type="password"
                   required
-                ></v-text-field>
+                />
                 <v-alert v-if="error" type="error" dense outlined class="mt-3">
                   {{ error }}
                 </v-alert>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="login">Login</v-btn>
+                <v-btn color="primary" @click="handleLogin">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -35,45 +35,27 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  name: 'Login',
-  data() {
-    return {
-      email: '',
-      password: '',
-      error: null,
-    };
-  },
-  methods: {
-    async login() {
-      try {
-        const credentials = btoa(`${this.email}:${this.password}`);
-        const response = await fetch('http://localhost:3000/login', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Basic ${credentials}`,
-          },
-        });
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
-        if (!response.ok) {
-          const data = await response.json();
-          this.error = data.message || 'Login failed';
-          return;
-        }
-        const data = await response.json();
-        console.log(data);
-        // Save token and user email for further requests
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userEmail', this.email);
-        this.$router.push({ name: 'Activities' });
-      } catch (err) {
-        console.error('Login error:', err);
-        this.error = 'Login failed';
-      }
-    },
-  },
+const router = useRouter();
+const authStore = useAuthStore();
+
+const email = ref('');
+const password = ref('');
+const error = ref(null);
+
+const handleLogin = async () => {
+  error.value = null;
+  try {
+    await authStore.login(email.value, password.value);
+    router.push({ name: 'Activities' });
+  } catch (err) {
+    console.error('Login error:', err);
+    error.value = err.message || 'Login failed';
+  }
 };
 </script>
 

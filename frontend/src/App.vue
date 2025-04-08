@@ -5,8 +5,8 @@
       <v-list dense>
         <v-list-item-group>
           <v-list-item
-            v-for="(item, i) in navItems"
-            :key="i"
+            v-for="(item, index) in navItems"
+            :key="index"
             :to="item.to"
             link
             @click="drawer = false"
@@ -27,21 +27,22 @@
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title>Time Tracker</v-toolbar-title>
       <v-spacer />
-      <!-- These buttons act as router links -->
+
+      <!-- Navigation buttons for authorized users -->
       <v-btn text :to="{ name: 'Activities' }">Activities</v-btn>
       <v-btn text :to="{ name: 'ActivityTypesEditor' }">Activity Types</v-btn>
       <v-btn text :to="{ name: 'StatisticsTable' }">Statistics</v-btn>
-      <template v-if="isLoggedIn">
-        <v-btn text>
-          {{ userEmail }}
-        </v-btn>
+
+      <!-- Conditionally display login/register or user info with logout -->
+      <template v-if="authStore.isAuthenticated">
+        <v-btn text>{{ authStore.userEmail || 'User' }}</v-btn>
         <v-btn text @click="logout">Logout</v-btn>
       </template>
       <template v-else>
         <v-btn text :to="{ name: 'Login' }">Login</v-btn>
         <v-btn text :to="{ name: 'Register' }">Register</v-btn>
-      </template></v-app-bar
-    >
+      </template>
+    </v-app-bar>
 
     <!-- Main Content Area -->
     <v-main>
@@ -57,54 +58,38 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  name: 'App',
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from './stores/auth'; // Import the auth store
 
-  data() {
-    return {
-      drawer: false,
-      // Navigation items for the drawer
-      navItems: [
-        {
-          title: 'Activities',
-          to: { name: 'Activities' },
-          icon: 'mdi-calendar',
-        },
-        {
-          title: 'Activity Types',
-          to: { name: 'ActivityTypesEditor' },
-          icon: 'mdi-format-list-bulleted',
-        },
-        {
-          title: 'Statistics',
-          to: { name: 'StatisticsTable' },
-          icon: 'mdi-chart-line',
-        },
-      ],
-    };
+// Local state for navigation drawer and nav items
+const drawer = ref(false);
+const navItems = ref([
+  { title: 'Activities', to: { name: 'Activities' }, icon: 'mdi-calendar' },
+  {
+    title: 'Activity Types',
+    to: { name: 'ActivityTypesEditor' },
+    icon: 'mdi-format-list-bulleted',
   },
-  computed: {
-    isLoggedIn() {
-      // Checks if token exists; you might also check its validity if needed
-      return !!localStorage.getItem('token');
-    },
-    userEmail() {
-      return localStorage.getItem('userEmail') || 'User';
-    },
+  {
+    title: 'Statistics',
+    to: { name: 'StatisticsTable' },
+    icon: 'mdi-chart-line',
   },
-  methods: {
-    logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userEmail');
-      this.$router.push({ name: 'Login' });
-    },
-  },
+]);
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+// Logout method
+const logout = () => {
+  authStore.logout();
+  router.push({ name: 'Login' });
 };
 </script>
 
 <style>
-/* Ensure full height for app container */
 html,
 body,
 #app {
@@ -112,10 +97,7 @@ body,
   margin: 0;
 }
 
-/* Set default font family for the application */
 .v-application {
   font-family: 'Roboto', sans-serif;
 }
-
-/* Additional global styling if needed */
 </style>

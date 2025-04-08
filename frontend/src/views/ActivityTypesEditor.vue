@@ -14,11 +14,12 @@
                 <v-toolbar flat>
                   <v-toolbar-title>Edit Activity Types</v-toolbar-title>
                   <v-spacer></v-spacer>
-                  <v-btn color="primary" @click="openNewDialog"
-                    >New Activity</v-btn
-                  >
+                  <v-btn color="primary" @click="openNewDialog">
+                    New Activity
+                  </v-btn>
                 </v-toolbar>
               </template>
+
               <template v-slot:item.actions="{ item }">
                 <v-icon small class="mr-2" @click="editActivity(item)">
                   mdi-pencil
@@ -42,19 +43,13 @@
                 v-model="editedActivity.name"
                 label="Name"
                 required
-              ></v-text-field>
+              />
               <v-text-field
                 v-model="editedActivity.description"
                 label="Description"
-              ></v-text-field>
-              <v-text-field
-                v-model="editedActivity.icon"
-                label="Icon URL"
-              ></v-text-field>
-              <v-text-field
-                v-model="editedActivity.color"
-                label="Color"
-              ></v-text-field>
+              />
+              <v-text-field v-model="editedActivity.icon" label="Icon URL" />
+              <v-text-field v-model="editedActivity.color" label="Color" />
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -68,103 +63,108 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  name: 'ActivityTypesEditor',
-  data() {
-    return {
-      headers: [
-        { text: 'Name', value: 'name' },
-        { text: 'Description', value: 'description' },
-        { text: 'Icon', value: 'icon' },
-        { text: 'Color', value: 'color' },
-        { text: 'Actions', value: 'actions', sortable: false },
-      ],
-      activityTypes: [],
-      dialog: false,
-      editedActivity: {},
-      dialogTitle: '',
-    };
-  },
-  created() {
-    this.fetchActivityTypes();
-  },
-  methods: {
-    async fetchActivityTypes() {
-      try {
-        // Replace with your API endpoint for activity types
-        const response = await fetch('http://localhost:3000/activity-types', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        this.activityTypes = await response.json();
-      } catch (error) {
-        console.error('Error fetching activity types:', error);
-      }
-    },
-    openNewDialog() {
-      this.dialogTitle = 'New Activity Type';
-      this.editedActivity = { name: '', description: '', icon: '', color: '' };
-      this.dialog = true;
-    },
-    editActivity(activity) {
-      this.dialogTitle = 'Edit Activity Type';
-      this.editedActivity = { ...activity };
-      this.dialog = true;
-    },
-    closeDialog() {
-      this.dialog = false;
-    },
-    async saveActivity() {
-      try {
-        let response;
-        if (this.editedActivity._id) {
-          // Update existing activity type
-          response = await fetch(
-            `http://localhost:3000/ctivity-types/${this.editedActivity._id}`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-              },
-              body: JSON.stringify(this.editedActivity),
-            }
-          );
-        } else {
-          // Create new activity type
-          response = await fetch('http://localhost:3000/activity-types', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify(this.editedActivity),
-          });
-        }
-        await response.json();
-        this.dialog = false;
-        this.fetchActivityTypes();
-      } catch (error) {
-        console.error('Error saving activity type:', error);
-      }
-    },
-    async deleteActivity(activity) {
-      try {
-        await fetch(`http://localhost:3000/activity-types/${activity._id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        this.fetchActivityTypes();
-      } catch (error) {
-        console.error('Error deleting activity type:', error);
-      }
-    },
-  },
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const headers = [
+  { text: 'Name', value: 'name' },
+  { text: 'Description', value: 'description' },
+  { text: 'Icon', value: 'icon' },
+  { text: 'Color', value: 'color' },
+  { text: 'Actions', value: 'actions', sortable: false },
+];
+
+const activityTypes = ref([]);
+const dialog = ref(false);
+const dialogTitle = ref('');
+const editedActivity = ref({});
+
+const fetchActivityTypes = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/activity-types', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    activityTypes.value = await response.json();
+  } catch (error) {
+    console.error('Error fetching activity types:', error);
+  }
 };
+
+const openNewDialog = () => {
+  dialogTitle.value = 'New Activity Type';
+  editedActivity.value = {
+    name: '',
+    description: '',
+    icon: '',
+    color: '',
+  };
+  dialog.value = true;
+};
+
+const editActivity = (item) => {
+  dialogTitle.value = 'Edit Activity Type';
+  editedActivity.value = { ...item };
+  dialog.value = true;
+};
+
+const closeDialog = () => {
+  dialog.value = false;
+};
+
+const saveActivity = async () => {
+  try {
+    let response;
+    if (editedActivity.value._id) {
+      response = await fetch(
+        `http://localhost:3000/activity-types/${editedActivity.value._id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify(editedActivity.value),
+        }
+      );
+    } else {
+      response = await fetch('http://localhost:3000/activity-types', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(editedActivity.value),
+      });
+    }
+    await response.json();
+    dialog.value = false;
+    fetchActivityTypes();
+  } catch (error) {
+    console.error('Error saving activity type:', error);
+  }
+};
+
+const deleteActivity = async (item) => {
+  try {
+    await fetch(`http://localhost:3000/activity-types/${item._id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    fetchActivityTypes();
+  } catch (error) {
+    console.error('Error deleting activity type:', error);
+  }
+};
+
+onMounted(() => {
+  fetchActivityTypes();
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Optional styling here */
+</style>

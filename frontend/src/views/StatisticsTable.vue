@@ -12,9 +12,10 @@
                   :items="stats.daily"
                   item-key="date"
                   class="elevation-1"
-                ></v-data-table>
+                />
               </v-card-text>
             </v-card>
+
             <v-card class="mb-4">
               <v-card-title>Weekly Statistics</v-card-title>
               <v-card-text>
@@ -23,9 +24,10 @@
                   :items="stats.weekly"
                   item-key="week"
                   class="elevation-1"
-                ></v-data-table>
+                />
               </v-card-text>
             </v-card>
+
             <v-card class="mb-4">
               <v-card-title>Monthly Statistics</v-card-title>
               <v-card-text>
@@ -34,9 +36,10 @@
                   :items="stats.monthly"
                   item-key="month"
                   class="elevation-1"
-                ></v-data-table>
+                />
               </v-card-text>
             </v-card>
+
             <v-card class="mb-4">
               <v-card-title>Yearly Statistics</v-card-title>
               <v-card-text>
@@ -45,7 +48,7 @@
                   :items="stats.yearly"
                   item-key="year"
                   class="elevation-1"
-                ></v-data-table>
+                />
               </v-card-text>
             </v-card>
           </v-col>
@@ -55,57 +58,64 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  name: 'StatisticsTable',
-  data() {
-    return {
-      stats: {
-        daily: [],
-        weekly: [],
-        monthly: [],
-        yearly: [],
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const stats = ref({
+  daily: [],
+  weekly: [],
+  monthly: [],
+  yearly: [],
+});
+
+const dailyHeaders = [
+  { text: 'Date', value: 'date' },
+  { text: 'Overall Total (min)', value: 'overallTotal' },
+  { text: 'Groups', value: 'groups', sortable: false },
+];
+
+const weeklyHeaders = [
+  { text: 'Week (Year, Week)', value: 'week' },
+  { text: 'Overall Total (min)', value: 'overallTotal' },
+  { text: 'Groups', value: 'groups', sortable: false },
+];
+
+const monthlyHeaders = [
+  { text: 'Month (Year, Month)', value: 'month' },
+  { text: 'Overall Total (min)', value: 'overallTotal' },
+  { text: 'Groups', value: 'groups', sortable: false },
+];
+
+const yearlyHeaders = [
+  { text: 'Year', value: 'year' },
+  { text: 'Overall Total (min)', value: 'overallTotal' },
+  { text: 'Groups', value: 'groups', sortable: false },
+];
+
+const fetchStatistics = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/stats/table', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-      dailyHeaders: [
-        { text: 'Date', value: 'date' },
-        { text: 'Overall Total (min)', value: 'overallTotal' },
-        { text: 'Groups', value: 'groups', sortable: false },
-      ],
-      weeklyHeaders: [
-        { text: 'Week (Year, Week)', value: 'week' },
-        { text: 'Overall Total (min)', value: 'overallTotal' },
-        { text: 'Groups', value: 'groups', sortable: false },
-      ],
-      monthlyHeaders: [
-        { text: 'Month (Year, Month)', value: 'month' },
-        { text: 'Overall Total (min)', value: 'overallTotal' },
-        { text: 'Groups', value: 'groups', sortable: false },
-      ],
-      yearlyHeaders: [
-        { text: 'Year', value: 'year' },
-        { text: 'Overall Total (min)', value: 'overallTotal' },
-        { text: 'Groups', value: 'groups', sortable: false },
-      ],
-    };
-  },
-  created() {
-    this.fetchStatistics();
-  },
-  methods: {
-    async fetchStatistics() {
-      try {
-        const response = await fetch('http://localhost:3000/stats/table', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        this.stats = await response.json();
-      } catch (error) {
-        console.error('Error fetching statistics:', error);
-      }
-    },
-  },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch statistics');
+    }
+
+    const data = await response.json();
+    stats.value = data;
+  } catch (error) {
+    console.error('Error fetching statistics:', error);
+  }
 };
+
+onMounted(fetchStatistics);
 </script>
 
-<style scoped></style>
+<style scoped>
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+</style>
