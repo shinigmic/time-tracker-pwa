@@ -41,3 +41,14 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+const cron = require('node-cron');
+const splitOvernightEntries = require('./scripts/splitOvernightEntries');
+
+// start 00:00
+cron.schedule('0 0 * * *', () => {
+  console.log('[CRON] Running overnight activity splitter...');
+  splitOvernightEntries().catch((err) => {
+    console.error('[CRON] ❌ Error in overnight entry splitter:', err);
+  });
+});
