@@ -11,6 +11,7 @@ const {
   endPause,
   stopTimeEntry,
   getCurrentTimeEntries,
+  getTodayTimeEntries,
 } = require('../controllers/timeEntryController');
 
 const { checkToken } = require('../middleware/checkToken');
@@ -30,6 +31,14 @@ router.get('/', getAllTimeEntries);
  */
 
 router.get('/current', getCurrentTimeEntries);
+
+/**
+ * GET /time-entries/today
+ *  * Returns all time entries created today by the authenticated user
+ */
+
+router.get('/today', getTodayTimeEntries);
+
 /**
  * GET /time-entries/:id
  * Retrieve a single time entry by its ID.

@@ -16,6 +16,32 @@ const getAllTimeEntries = async (req, res) => {
 };
 
 /**
+ * GET /time-entries/today
+ * Returns all time entries started today for the authenticated user.
+ */
+const getTodayTimeEntries = async (req, res) => {
+  try {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    const entries = await TimeEntry.find({
+      user: req.user._id,
+      startTime: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    }).sort({ startTime: 1 }); // Optional: sort by start time
+
+    res.status(200).json(entries);
+  } catch (error) {
+    console.error("Error fetching today's time entries:", error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+/**
  * GET /time-entries/:id
  * Retrieve a single time entry by its ID.
  */
@@ -242,4 +268,5 @@ module.exports = {
   endPause,
   stopTimeEntry,
   getCurrentTimeEntries,
+  getTodayTimeEntries,
 };
