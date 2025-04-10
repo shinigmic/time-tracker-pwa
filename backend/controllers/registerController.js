@@ -10,11 +10,66 @@ const ActivityType = require('../models/ActivityType');
 
 // Define default activities
 const defaultActivities = [
-  { name: 'Work', description: 'Work related activity' },
-  { name: 'Rest', description: 'Time to relax' },
-  { name: 'Reading', description: 'Reading books or articles' },
-  { name: 'Meditation', description: 'Meditation for mindfulness' },
-  { name: 'House Chores', description: 'Household tasks' },
+  {
+    name: 'Work',
+    description: 'Work related activity',
+    color: '#1976D2',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    name: 'Rest',
+    description: 'Time to relax',
+    color: '#81C784',
+    icon: 'mdi-sofa',
+  },
+  {
+    name: 'Reading',
+    description: 'Reading books or articles',
+    color: '#FFD54F',
+    icon: 'mdi-book-open-page-variant',
+  },
+  {
+    name: 'Meditation',
+    description: 'Meditation for mindfulness',
+    color: '#B39DDB',
+    icon: 'mdi-meditation',
+  },
+  {
+    name: 'House Chores',
+    description: 'Household tasks',
+    color: '#FF8A65',
+    icon: 'mdi-broom',
+  },
+  {
+    name: 'Exercise',
+    description: 'Physical workouts and fitness activities',
+    color: '#E53935',
+    icon: 'mdi-dumbbell',
+  },
+  {
+    name: 'Learning',
+    description: 'Engaging in educational activities or courses',
+    color: '#3F51B5',
+    icon: 'mdi-school',
+  },
+  {
+    name: 'Socializing',
+    description: 'Spending time with friends and social groups',
+    color: '#F06292',
+    icon: 'mdi-account-group',
+  },
+  {
+    name: 'Commuting',
+    description: 'Traveling to and from different locations',
+    color: '#757575',
+    icon: 'mdi-car',
+  },
+  {
+    name: 'Entertainment',
+    description: 'Watching movies, playing games, or other leisure activities',
+    color: '#8E24AA',
+    icon: 'mdi-movie',
+  },
 ];
 
 // POST: Create a new user
@@ -45,6 +100,8 @@ const registerUserHandler = async (req, res) => {
         user: newUser._id,
         name: activity.name,
         description: activity.description,
+        color: activity.color,
+        icon: activity.icon,
       });
     }
 
