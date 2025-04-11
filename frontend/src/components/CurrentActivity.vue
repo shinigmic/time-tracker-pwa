@@ -59,7 +59,7 @@
             </v-btn>
 
             <v-btn
-              color="error"
+              class="mr-2 text-white"
               :style="{
                 backgroundColor: '#f86e6e',
                 height: '38px',
@@ -70,7 +70,41 @@
             >
               Stop
             </v-btn>
+
+            <v-btn
+              class="text-white"
+              :style="{
+                backgroundColor: '#616161',
+                height: '38px',
+                borderRadius: '8px',
+                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
+              }"
+              @click="confirmDialog = true"
+            >
+              Delete
+            </v-btn>
           </v-row>
+
+          <!-- Confirm Deletion Dialog -->
+          <v-dialog v-model="confirmDialog" max-width="400">
+            <v-card>
+              <v-card-title class="text-h6"
+                >Delete Current Activity?</v-card-title
+              >
+              <v-card-text>
+                <p>
+                  <v-icon left>{{ currentActivity.icon || 'mdi-run' }}</v-icon>
+                  <strong>{{ currentActivity.name }}</strong
+                  ><br />
+                  Are you sure you want to delete this time entry?
+                </p>
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn text @click="confirmDialog = false">Cancel</v-btn>
+                <v-btn color="error" @click="deleteCurrentEntry">Delete</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
     </v-card>
@@ -78,7 +112,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import TimeDisplay from './TimeDisplay.vue';
 
 const props = defineProps({
@@ -86,6 +120,10 @@ const props = defineProps({
   activityTypes: Array,
   now: Number,
 });
+
+const emit = defineEmits(['entry-deleted']);
+
+const confirmDialog = ref(false);
 
 const activeEntry = computed(
   () => props.todayEntries.find((e) => !e.endTime) || null
@@ -101,6 +139,32 @@ const isPaused = computed(() => {
   const last = pauses[pauses.length - 1];
   return last && !last.pauseEnd;
 });
+
+const deleteCurrentEntry = async () => {
+  if (!activeEntry.value) return;
+
+  try {
+    const res = await fetch(
+      `http://localhost:3000/time-entries/${activeEntry.value._id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      console.error('Failed to delete time entry');
+      return;
+    }
+
+    confirmDialog.value = false;
+    emit('entry-deleted');
+  } catch (err) {
+    console.error('Error deleting time entry:', err);
+  }
+};
 </script>
 
 <style scoped>
@@ -121,5 +185,21 @@ const isPaused = computed(() => {
 }
 .mb-4 {
   margin-bottom: 24px;
+}
+.v-card-title {
+  font-weight: bold;
+}
+.v-card-text {
+  font-size: 14px;
+}
+.delete-btn {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 </style>

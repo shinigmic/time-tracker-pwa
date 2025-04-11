@@ -23,6 +23,7 @@
           :now="now"
           @stop="stopActivity"
           @pause-toggle="togglePause"
+          @entry-deleted="fetchDataAgain"
         />
 
         <!-- Middle: Today's active sessions (sorted by time spent) -->
@@ -184,6 +185,11 @@ const fetchTodayEntries = async () => {
   }
 };
 
+const fetchDataAgain = async () => {
+  await fetchActivities();
+  await fetchCurrentEntries();
+  await fetchTodayEntries();
+};
 // Start ticking now every second
 onMounted(async () => {
   await fetchActivities();
