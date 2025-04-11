@@ -13,11 +13,22 @@
           sm="6"
           md="4"
         >
-          <v-card outlined>
+          <v-card
+            class="activity-card"
+            outlined
+            :style="{
+              borderLeft: '6px solid ' + (activity.color || '#CCCCCC'),
+              backgroundColor: '#FFFFFF',
+            }"
+          >
             <v-card-title class="d-flex align-center justify-space-between">
-              <span>
-                <v-icon left>{{ activity.icon || 'mdi-run' }}</v-icon>
-                {{ activity.name }}
+              <span class="d-flex align-center">
+                <v-icon class="mr-2" :color="activity.color || 'grey'">
+                  {{ activity.icon || 'mdi-run' }}
+                </v-icon>
+                <span class="font-weight-bold text-subtitle-1">
+                  {{ activity.name }}
+                </span>
               </span>
 
               <v-tooltip bottom>
@@ -31,7 +42,14 @@
             </v-card-title>
 
             <v-card-actions class="justify-center">
-              <v-btn small color="primary" @click="$emit('start', activity)">
+              <v-btn
+                small
+                variant="outlined"
+                color="primary"
+                class="font-weight-medium"
+                rounded
+                @click="$emit('start', activity)"
+              >
                 Start Activity
               </v-btn>
             </v-card-actions>
@@ -72,10 +90,22 @@ const inactiveActivities = computed(() =>
 </script>
 
 <style scoped>
-.v-card {
+.activity-card {
   border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
 .v-icon {
   cursor: pointer;
+}
+.v-btn {
+  min-width: 110px;
+  text-transform: none;
+  font-size: 16px;
+  border-radius: 8px;
 }
 </style>

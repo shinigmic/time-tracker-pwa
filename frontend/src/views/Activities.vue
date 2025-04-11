@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <v-container>
-        <v-card-title class="headline text-center">
+        <v-card-title class="headline text-center font-weight-bold text-h6">
           Today’s Activity Overview
         </v-card-title>
 

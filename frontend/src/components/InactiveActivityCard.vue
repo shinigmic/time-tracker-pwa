@@ -1,11 +1,21 @@
 <template>
-  <v-card outlined>
-    <v-card-title>
-      <v-icon left>{{ activity.icon || 'mdi-run' }}</v-icon>
-      {{ activity.name }}
+  <v-card
+    class="activity-card"
+    dark
+    elevation="3"
+    :style="{ backgroundColor: activity.color || '#F5F5F5' }"
+  >
+    <v-card-title class="d-flex align-center justify-space-between">
+      <span class="d-flex align-center">
+        <v-icon class="mr-2">{{ activity.icon || 'mdi-run' }}</v-icon>
+        <span class="font-weight-bold text-subtitle-1">
+          {{ activity.name }}
+        </span>
+      </span>
+
       <v-tooltip bottom>
         <template #activator="{ props }">
-          <v-icon class="ml-2" small color="grey" v-bind="props" v-on="on">
+          <v-icon small color="white" v-bind="props">
             mdi-information-outline
           </v-icon>
         </template>
@@ -13,17 +23,12 @@
       </v-tooltip>
     </v-card-title>
 
-    <v-tooltip bottom>
-      <template #activator="{ on, attrs }">
-        <v-card-subtitle v-bind="attrs" v-on="on">
-          <span class="text-grey">Not started today</span>
-        </v-card-subtitle>
-      </template>
-      <span>{{ activity.description }}</span>
-    </v-tooltip>
+    <v-card-text class="text-center">
+      <span class="text-caption">Not started today</span>
+    </v-card-text>
 
-    <v-card-actions>
-      <v-btn color="success" @click="$emit('start')">Start</v-btn>
+    <v-card-actions class="justify-center">
+      <v-btn small color="primary" @click="$emit('start')"> Start </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -33,3 +38,15 @@ defineProps({
   activity: Object,
 });
 </script>
+
+<style scoped>
+.activity-card {
+  border-radius: 14px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+</style>
