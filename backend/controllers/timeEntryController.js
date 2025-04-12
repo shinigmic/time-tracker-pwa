@@ -101,19 +101,34 @@ const createTimeEntry = async (req, res) => {
  */
 const updateTimeEntry = async (req, res) => {
   try {
-    const { activity, startTime, endTime, duration, notes } = req.body;
+    const { activity, startTime, endTime, notes } = req.body;
 
-    const updatedTimeEntry = await TimeEntry.findOneAndUpdate(
-      { _id: req.params.id, user: req.user._id },
-      { activity, startTime, endTime, duration, notes },
-      { new: true }
-    );
+    const entry = await TimeEntry.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
 
-    if (!updatedTimeEntry) {
+    if (!entry) {
       return res.status(404).json({ message: 'Time entry not found' });
     }
 
-    res.json(updatedTimeEntry);
+    // Apply updated fields
+    if (activity) entry.activity = activity;
+    if (startTime) entry.startTime = new Date(startTime);
+    if (endTime) entry.endTime = new Date(endTime);
+    else entry.endTime = undefined; // unset if cleared
+    if (notes !== undefined) entry.notes = notes;
+
+    if (entry.endTime && entry.startTime > entry.endTime) {
+      return res
+        .status(400)
+        .json({ message: 'Start time cannot be after end time' });
+    }
+
+    // Trigger pre-save hook for recalculating duration
+    await entry.save();
+
+    res.json(entry);
   } catch (error) {
     console.error('Error updating time entry:', error);
     res.status(500).json({ message: 'Internal server error' });

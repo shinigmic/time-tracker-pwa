@@ -190,16 +190,18 @@ const totalTimeToday = computed(() => {
 
 <style scoped>
 .activity-card {
-  border-radius: 12px;
+  border-radius: 14px;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   background-color: #fafafa;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   border-left: 6px solid var(--accent-color, #5ac15f);
 }
+
 .activity-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(134, 67, 67, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
+
 .text-white {
   color: white;
 }

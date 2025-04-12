@@ -24,6 +24,7 @@
           @stop="stopActivity"
           @pause-toggle="togglePause"
           @entry-deleted="fetchDataAgain"
+          @entry-updated="fetchTodayEntries"
         />
 
         <!-- Middle: Today's active sessions (sorted by time spent) -->
