@@ -270,13 +270,25 @@ const getTableStats = async (req, res) => {
     endDate.setHours(23, 59, 59, 999);
 
     const oneDayMs = 1000 * 60 * 60 * 24;
-    const totalDays = Math.ceil((endDate - startDate) / oneDayMs) + 1;
+
+    const startOfDay = new Date(startDate.toDateString());
+    const endOfDay = new Date(endDate.toDateString());
+    const totalDays = Math.floor((endOfDay - startOfDay) / oneDayMs) + 1;
 
     const statsRaw = await TimeEntry.aggregate([
       {
         $match: {
           user: userId,
-          startTime: { $gte: startDate, $lte: endDate },
+          $or: [
+            {
+              startTime: { $lte: endDate },
+              endTime: { $gte: startDate },
+            },
+            {
+              startTime: { $lte: endDate },
+              endTime: null,
+            },
+          ],
         },
       },
       {
