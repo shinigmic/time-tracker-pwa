@@ -75,6 +75,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+const api = import.meta.env.VITE_API_BASE;
 
 const today = new Date();
 const weekAgo = new Date();
@@ -90,7 +91,7 @@ const activityTypeMap = ref({});
 
 const fetchActivityTypes = async () => {
   try {
-    const res = await fetch('http://localhost:3000/activity-types', {
+    const res = await fetch(`${api}/activity-types`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
     const data = await res.json();
@@ -105,7 +106,7 @@ const fetchActivityTypes = async () => {
 const fetchStats = async () => {
   try {
     const res = await fetch(
-      `http://localhost:3000/stats/table?from=${from.value}&to=${to.value}`,
+      `${api}/stats/table?from=${from.value}&to=${to.value}`,
       {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       }

@@ -45,10 +45,11 @@ const name = ref('');
 const email = ref('');
 const password = ref('');
 const error = ref(null);
+const api = import.meta.env.VITE_API_BASE;
 
 const register = async () => {
   try {
-    const response = await fetch('http://localhost:3000/register', {
+    const response = await fetch(`${api}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

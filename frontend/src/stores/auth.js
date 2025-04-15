@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+const api = import.meta.env.VITE_API_BASE;
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -11,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       const credentials = btoa(`${email}:${password}`);
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch(`${api}/login`, {
         method: 'GET',
         headers: {
           Authorization: `Basic ${credentials}`,

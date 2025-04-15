@@ -4,7 +4,8 @@ const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const router = require('./routes/indexRoutes');
+const apiRouter = require('./routes/indexRoutes');
+
 const connectDB = require('./config/db');
 
 const app = express();
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Mount the router
-app.use(router);
+app.use('/api', apiRouter);
 
 const PORT = process.env.PORT || 3000;
 

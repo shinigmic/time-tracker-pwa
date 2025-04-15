@@ -130,6 +130,7 @@ import { computed, ref, watch } from 'vue';
 import TimeDisplay from './TimeDisplay.vue';
 import DateTimePicker from './DateTimePicker.vue';
 import { reactive } from 'vue';
+const api = import.meta.env.VITE_API_BASE;
 
 const props = defineProps({
   todayEntries: Array,
@@ -178,13 +179,10 @@ const deleteCurrentEntry = async () => {
   }
 
   try {
-    const res = await fetch(
-      `http://localhost:3000/time-entries/${activeEntry.value._id}`,
-      {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const res = await fetch(`${api}/time-entries/${activeEntry.value._id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     if (!res.ok) {
       alert('Failed to delete time entry');
@@ -220,17 +218,14 @@ const saveEdit = async () => {
   };
 
   try {
-    const res = await fetch(
-      `http://localhost:3000/time-entries/${activeEntry.value._id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const res = await fetch(`${api}/time-entries/${activeEntry.value._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(body),
+    });
 
     if (!res.ok) throw new Error('Failed to update time entry');
 

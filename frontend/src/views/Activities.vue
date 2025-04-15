@@ -51,10 +51,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-
 import CurrentActivity from '../components/CurrentActivity.vue';
 import TodayActiveList from '../components/TodayActiveList.vue';
 import TodayInactiveList from '../components/TodayInactiveList.vue';
+
+const api = import.meta.env.VITE_API_BASE;
 
 const activityTypes = ref([]);
 const currentEntries = ref({});
@@ -67,7 +68,7 @@ let intervalId = null;
 // Fetch user-defined activity types
 const fetchActivities = async () => {
   try {
-    const res = await fetch('http://localhost:3000/activity-types', {
+    const res = await fetch(`${api}/activity-types`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
     activityTypes.value = await res.json();
@@ -80,7 +81,7 @@ const fetchActivities = async () => {
 // Fetch all ongoing/unfinished activity sessions
 const fetchCurrentEntries = async () => {
   try {
-    const res = await fetch('http://localhost:3000/time-entries/current', {
+    const res = await fetch(`${api}/time-entries/current`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
     const data = await res.json();
@@ -101,15 +102,12 @@ const stopActivity = async (activityId) => {
   if (!entry) return;
 
   try {
-    const res = await fetch(
-      `http://localhost:3000/time-entries/${entry._id}/stop`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    const res = await fetch(`${api}/time-entries/${entry._id}/stop`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
     await res.json();
     await fetchTodayEntries();
   } catch (err) {
@@ -132,7 +130,7 @@ const togglePause = async (activityId) => {
   const endpoint = isPaused ? 'pause-end' : 'pause-start';
 
   try {
-    await fetch(`http://localhost:3000/time-entries/${entry._id}/${endpoint}`, {
+    await fetch(`${api}/time-entries/${entry._id}/${endpoint}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -154,7 +152,7 @@ const startActivity = async (activity) => {
   }
 
   try {
-    await fetch('http://localhost:3000/time-entries', {
+    await fetch(`${api}/time-entries`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -175,7 +173,7 @@ const startActivity = async (activity) => {
 
 const fetchTodayEntries = async () => {
   try {
-    const res = await fetch('http://localhost:3000/time-entries/today', {
+    const res = await fetch(`${api}/time-entries/today`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

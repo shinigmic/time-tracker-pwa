@@ -169,6 +169,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+const api = import.meta.env.VITE_API_BASE;
+
 const colorMenu = ref(false);
 
 const headers = [
@@ -269,7 +271,7 @@ const generateRowStyles = () => {
 
 const fetchActivityTypes = async () => {
   try {
-    const response = await fetch('http://localhost:3000/activity-types', {
+    const response = await fetch(`${api}/activity-types`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -314,19 +316,16 @@ const saveActivity = async () => {
 
     let response;
     if (payload._id) {
-      response = await fetch(
-        `http://localhost:3000/activity-types/${payload._id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      response = await fetch(`${api}/activity-types/${payload._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(payload),
+      });
     } else {
-      response = await fetch('http://localhost:3000/activity-types', {
+      response = await fetch(`${api}/activity-types`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -354,15 +353,12 @@ const confirmDeleteActivity = (activity) => {
 
 const performDeleteActivity = async () => {
   try {
-    await fetch(
-      `http://localhost:3000/activity-types/${activityToDelete.value._id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    await fetch(`${api}/activity-types/${activityToDelete.value._id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
     confirmDelete.value = false;
     activityToDelete.value = null;
     fetchActivityTypes();
