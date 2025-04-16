@@ -140,7 +140,6 @@
 //   //   port: 4173,
 //   // },
 // });
-
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -180,14 +179,20 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+            handler: 'NetworkOnly',
+          },
+        ],
       },
       devOptions: {
         enabled: true,
         type: 'module',
       },
-      build: {
-        outDir: 'dist',
-      },
     }),
   ],
+  build: {
+    outDir: 'dist',
+  },
 });

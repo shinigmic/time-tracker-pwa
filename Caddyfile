@@ -1,13 +1,14 @@
-:80 {
-  encode gzip
+focustime.space {
+    tls /etc/ssl/cloudflare.pem /etc/ssl/cloudflare.key
+    encode gzip
 
-  root * /usr/share/caddy
-  file_server
+    handle /api* {
+        reverse_proxy backend:3000
+    }
 
-  @api {
-    path /api/*
-  }
-  reverse_proxy @api backend:3000
-
-  try_files {path} /index.html
+    handle {
+        root * /usr/share/caddy
+        try_files {path} /index.html
+        file_server
+    }
 }

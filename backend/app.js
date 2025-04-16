@@ -20,8 +20,18 @@ app.use(express.urlencoded({ extended: true }));
 // Enable CORS
 app.use(cors());
 
-// Mount the router
+// Redirect root to /api/
+app.get('/', (req, res) => {
+  res.redirect('/api');
+});
+
+// Mount the API router
 app.use('/api', apiRouter);
+
+// Handle 404 errors for undefined routes
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Route not found' });
+});
 
 const PORT = process.env.PORT || 3000;
 

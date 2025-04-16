@@ -12,6 +12,8 @@ services:
       - '443:443'
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./frontend/certs/cloudflare.pem:/etc/ssl/cloudflare.pem
+      - ./frontend/certs/cloudflare.key:/etc/ssl/cloudflare.key
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
