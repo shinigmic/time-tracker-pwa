@@ -1,0 +1,98 @@
+/* Ensure the app takes up full height and removes default margins/padding */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #fff;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Vuetify main application container */
+.v-application {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content area */
+.v-main {
+  flex: 1 0 auto;
+  padding-top: 32px;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wrap of main */
+.v-main__wrap {
+  padding: 0 !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Optional: some spacing for <v-container> inside .v-main */
+.v-main .v-container {
+  flex: 1;
+}
+
+/* Footer stays at the bottom */
+.v-footer {
+  flex-shrink: 0;
+}
+
+/* Sidebar (if any) */
+.v-navigation-drawer {
+  /* background-color: #ffffff; */
+}
+
+/* AppBar (top menu) */
+.v-app-bar {
+  /* background-color: #2196f3; */
+}
+
+/* Buttons */
+.v-btn {
+  text-transform: none;
+}
+
+/* Fallback font declaration */
+.v-application {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Unified section title style */
+.section-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  text-align: center;
+  color: #212121;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+/* Responsive improvements */
+@media (max-width: 600px) {
+  .v-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .v-card {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    transition: padding 0.3s ease, border-radius 0.3s ease;
+    box-shadow: none !important;
+  }
+
+  th,
+  td {
+    padding: 6px !important;
+    font-size: 0.85rem;
+  }
+}

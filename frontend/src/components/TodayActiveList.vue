@@ -31,25 +31,33 @@
                   {{ activity.icon || 'mdi-run' }}
                 </v-icon>
                 <span
-                  class="font-weight-bold text-subtitle-1"
+                  class="font-weight-bold text-subtitle-1 activity-name"
                   :style="{ color: isActive(activity._id) ? 'white' : 'black' }"
                 >
                   {{ activity.name }}
                 </span>
               </span>
 
-              <v-tooltip bottom>
-                <template #activator="{ props }">
-                  <v-icon
-                    small
-                    :color="isActive(activity._id) ? '#fff' : 'grey'"
-                    v-bind="props"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                </template>
-                <span>{{ activity.description }}</span>
-              </v-tooltip>
+              <v-icon
+                small
+                style="cursor: pointer"
+                :color="isActive(activity._id) ? '#fff' : 'grey'"
+                @click.stop="
+                  dialogVisible = true;
+                  visibleDialogId = activity._id;
+                "
+              >
+                mdi-information-outline
+              </v-icon>
+
+              <ActivityInfoDialog
+                v-model="dialogVisible"
+                v-if="visibleDialogId === activity._id"
+                :title="activity.name"
+                :description="activity.description"
+                :icon="activity.icon"
+                :iconColor="activity.color"
+              />
             </v-card-title>
 
             <v-card-text
@@ -76,7 +84,7 @@
                 </v-btn>
 
                 <v-btn
-                  class="text-white"
+                  class="mr-2 text-white"
                   :style="{
                     backgroundColor: '#f86e6e',
                     minWidth: '100px',
@@ -116,8 +124,13 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { formatTime } from '../utils/time.js';
+
+import ActivityInfoDialog from './ActivityInfoDialog.vue';
+
+const visibleDialogId = ref(null);
+const dialogVisible = ref(false);
 
 const props = defineProps({
   activityTypes: Array,
@@ -193,7 +206,7 @@ const totalTimeToday = computed(() => {
   border-radius: 14px;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   background-color: #fafafa;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   border-left: 6px solid var(--accent-color, #5ac15f);
 }
 
@@ -201,7 +214,10 @@ const totalTimeToday = computed(() => {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
-
+.active-card {
+  background-color: #5ac15f !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
 .text-white {
   color: white;
 }
@@ -210,5 +226,20 @@ const totalTimeToday = computed(() => {
   text-transform: none;
   font-size: 16px;
   border-radius: 8px;
+}
+.activity-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  display: inline-block;
+}
+.v-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.v-card-actions {
+  margin-bottom: 4px;
 }
 </style>

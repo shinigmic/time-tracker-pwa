@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <v-container>
-        <v-card-title class="headline text-center font-weight-bold text-h6">
+        <v-card-title class="section-title">
           Today’s Activity Overview
         </v-card-title>
 
@@ -210,5 +210,8 @@ onUnmounted(() => {
 }
 .mb-4 {
   margin-bottom: 16px;
+}
+.v-card {
+  box-shadow: none !important;
 }
 </style>

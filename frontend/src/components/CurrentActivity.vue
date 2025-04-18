@@ -12,23 +12,26 @@
             <v-icon class="mr-3 text-white" size="50">
               {{ currentActivity.icon || 'mdi-run' }}
             </v-icon>
-            <span class="text-h5 font-weight-bold text-white">{{
+            <span class="text-h5 font-weight-bold text-white activity-name">{{
               currentActivity.name
             }}</span>
-            <v-tooltip bottom>
-              <template #activator="{ props }">
-                <v-icon
-                  v-bind="props"
-                  class="ml-2"
-                  size="20"
-                  color="white"
-                  style="cursor: pointer"
-                >
-                  mdi-information-outline
-                </v-icon>
-              </template>
-              <span>{{ currentActivity.description }}</span>
-            </v-tooltip>
+            <v-icon
+              class="ml-2"
+              size="20"
+              color="white"
+              style="cursor: pointer"
+              @click="dialogVisible = true"
+            >
+              mdi-information-outline
+            </v-icon>
+
+            <ActivityInfoDialog
+              v-model="dialogVisible"
+              v-if="currentActivity"
+              :title="currentActivity.name"
+              :description="currentActivity.description"
+              :icon="currentActivity.icon"
+            />
           </v-row>
           <div class="mt-2 text-subtitle-2 text-white font-italic">
             Active session
@@ -40,23 +43,23 @@
           <div class="text-h4 font-weight-bold text-white">
             <TimeDisplay :entry="activeEntry" :now="now" />
           </div>
-          <v-row class="mt-2" justify="end">
+          <v-row class="mt-2 action-row" justify="end">
             <v-btn
-              class="mr-2 text-white"
+              class="action-btn text-white"
               :style="btnStyles.warning"
               @click="$emit('pause-toggle', currentActivity._id)"
             >
               {{ isPaused ? 'Resume' : 'Pause' }}
             </v-btn>
             <v-btn
-              class="mr-2 text-white"
+              class="action-btn text-white"
               :style="btnStyles.error"
               @click="$emit('stop', currentActivity._id)"
             >
               Stop
             </v-btn>
             <v-btn
-              class="text-white"
+              class="action-btn text-white"
               :style="btnStyles.edit"
               @click="editDialog = true"
             >
@@ -81,7 +84,6 @@
             density="comfortable"
           />
 
-          <!-- Використання нового компонента -->
           <DateTimePicker
             v-model:startTime="form.startTime"
             v-model:endTime="form.endTime"
@@ -137,6 +139,12 @@ const props = defineProps({
   activityTypes: Array,
   now: Number,
 });
+
+import ActivityInfoDialog from './ActivityInfoDialog.vue';
+
+const visibleDialogId = ref(null);
+const dialogVisible = ref(false);
+
 const emit = defineEmits(['entry-deleted', 'entry-updated']);
 const confirmDialog = ref(false);
 
@@ -294,17 +302,38 @@ const btnStyles = {
 <style scoped>
 .activity-card {
   border-radius: 16px;
-  box-shadow: 0 2px 6px #5ac15f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
+  margin: 0 10px !important;
+  margin-bottom: 16px !important;
 }
+
 .activity-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px #5ac15f;
+  box-shadow: 0 6px 10px #53d753;
 }
 .text-white {
   color: white;
 }
 .v-picker.v-sheet {
   width: auto;
+}
+.activity-name {
+  font-size: clamp(1.2rem, 4vw, 1.6rem) !important;
+}
+
+.v-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.action-btn {
+  margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+  .action-row {
+    margin-right: 4px;
+  }
 }
 </style>

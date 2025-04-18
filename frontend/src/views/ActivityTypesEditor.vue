@@ -1,19 +1,67 @@
 <template>
   <v-app>
     <v-main>
+      <v-card-title class="section-title"> Activity Types </v-card-title>
       <v-container>
         <v-row>
           <v-col cols="12">
             <v-data-table
+              items-per-page="25"
               :headers="headers"
               :items="activityTypes"
               item-key="_id"
               class="elevation-1"
               :item-class="getRowClass"
             >
+              <template v-slot:headers>
+                <tr class="headers">
+                  <th
+                    class="text-left px-4 py-2 font-weight-bold"
+                    style="width: 20%"
+                  >
+                    <v-icon size="18" class="mr-1 text-primary"
+                      >mdi-format-title</v-icon
+                    >
+                    Name
+                  </th>
+                  <th
+                    class="text-left px-4 py-2 font-weight-bold"
+                    style="width: 60%"
+                  >
+                    <v-icon size="18" class="mr-1 text-deep-purple"
+                      >mdi-text-box-outline</v-icon
+                    >
+                    Description
+                  </th>
+                  <th
+                    class="text-left px-4 py-2 font-weight-bold"
+                    style="width: 15%"
+                  >
+                    <v-icon size="18" class="mr-1 text-teal"
+                      >mdi-palette-swatch</v-icon
+                    >
+                    Color
+                  </th>
+                  <th
+                    class="text-left px-4 py-2 font-weight-bold"
+                    style="width: 5%"
+                  >
+                    <v-icon
+                      size="18"
+                      class="mr-1 text-red"
+                      color="red-lighten-2"
+                      >mdi-tools</v-icon
+                    >
+                  </th>
+                </tr>
+              </template>
+
               <template v-slot:top>
                 <v-toolbar flat>
-                  <v-toolbar-title>🎨 Edit Activity Types</v-toolbar-title>
+                  <v-toolbar-title class="text-wrap" style="max-width: 60%">
+                    🎨 Edit Activity Types
+                  </v-toolbar-title>
+
                   <v-spacer></v-spacer>
                   <v-btn color="primary" @click="openNewDialog"
                     >New Activity</v-btn
@@ -41,7 +89,10 @@
                 <v-icon small class="mr-2" @click="editActivity(item)"
                   >mdi-pencil</v-icon
                 >
-                <v-icon small color="red" @click="confirmDeleteActivity(item)"
+                <v-icon
+                  small
+                  color="red-lighten-2"
+                  @click="confirmDeleteActivity(item)"
                   >mdi-delete</v-icon
                 >
               </template>
@@ -124,7 +175,21 @@
                     solo
                     style="width: 200px"
                     @update:modelValue="(val) => (editedActivity.icon = val)"
-                  />
+                  >
+                    <template>
+                      <div class="d-flex align-center">
+                        <v-icon class="mr-2">{{ item?.value }}</v-icon>
+                        {{ item?.text }}
+                      </div>
+                    </template>
+
+                    <template #item="{ item, props }">
+                      <v-list-item v-bind="props" class="px-3">
+                        <v-icon class="mr-3">{{ item.value }}</v-icon>
+                        <span>{{ item.text }}</span>
+                      </v-list-item>
+                    </template>
+                  </v-select>
                 </template>
               </v-text-field>
             </v-card-text>
@@ -173,13 +238,12 @@ const api = import.meta.env.VITE_API_BASE;
 
 const colorMenu = ref(false);
 
-const headers = [
+const headers = ref([
   { text: 'Name', value: 'name' },
   { text: 'Description', value: 'description' },
   { text: 'Color', value: 'color' },
-
   { text: 'Actions', value: 'actions', sortable: false },
-];
+]);
 
 const activityTypes = ref([]);
 const dialog = ref(false);

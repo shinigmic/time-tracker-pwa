@@ -2,6 +2,18 @@
   <v-app>
     <!-- Navigation Drawer for mobile and desktop navigation -->
     <v-navigation-drawer v-model="drawer" app color="primary" dark temporary>
+      <!-- 👤 Display user email at the top -->
+      <v-list-item class="px-4 py-2">
+        <v-list-item-content>
+          <v-list-item-title class="text-subtitle-1">
+            {{ authStore.userEmail || 'Guest' }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider class="mb-1" />
+
+      <!-- 📋 Main navigation links -->
       <v-list dense>
         <v-list-item-group>
           <v-list-item
@@ -20,28 +32,65 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+
+      <v-spacer />
+
+      <v-divider class="my-1" />
+
+      <!-- 🔐 Auth actions (Login / Logout) at the bottom -->
+      <v-list dense>
+        <template v-if="authStore.isAuthenticated">
+          <v-list-item @click="logout">
+            <v-list-item-icon>
+              <v-icon color="red-lighten-2">mdi-logout</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </template>
+        <template v-else>
+          <v-list-item :to="{ name: 'Login' }" link @click="drawer = false">
+            <v-list-item-icon>
+              <v-icon color="green-lighten-2">mdi-login</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'Register' }" link @click="drawer = false">
+            <v-list-item-icon>
+              <v-icon color="amber">mdi-account-plus</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Register</v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-list>
     </v-navigation-drawer>
 
     <!-- App Bar with navigation buttons as links -->
     <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-toolbar-title>Time Tracker</v-toolbar-title>
+
+      <v-toolbar-title
+        class="text-truncate font-weight-bold"
+        style="font-size: 1.1rem"
+      >
+        ⏱ Time Tracker
+      </v-toolbar-title>
       <v-spacer />
 
-      <!-- Navigation buttons for authorized users -->
-      <v-btn text :to="{ name: 'Activities' }">Activities</v-btn>
-      <v-btn text :to="{ name: 'ActivityTypesEditor' }">Activity Types</v-btn>
-      <v-btn text :to="{ name: 'StatisticsTable' }">Statistics</v-btn>
+      <!-- Navigation buttons: only visible on medium and larger screens -->
+      <div class="d-none d-md-flex align-center">
+        <v-btn text :to="{ name: 'Activities' }">Activities</v-btn>
+        <v-btn text :to="{ name: 'ActivityTypesEditor' }">Activity Types</v-btn>
+        <v-btn text :to="{ name: 'StatisticsTable' }">Statistics</v-btn>
 
-      <!-- Conditionally display login/register or user info with logout -->
-      <template v-if="authStore.isAuthenticated">
-        <v-btn text>{{ authStore.userEmail || 'User' }}</v-btn>
-        <v-btn text @click="logout">Logout</v-btn>
-      </template>
-      <template v-else>
-        <v-btn text :to="{ name: 'Login' }">Login</v-btn>
-        <v-btn text :to="{ name: 'Register' }">Register</v-btn>
-      </template>
+        <template v-if="authStore.isAuthenticated">
+          <v-btn text>{{ authStore.userEmail || 'User' }}</v-btn>
+          <v-btn text @click="logout">Logout</v-btn>
+        </template>
+        <template v-else>
+          <v-btn text :to="{ name: 'Login' }">Login</v-btn>
+          <v-btn text :to="{ name: 'Register' }">Register</v-btn>
+        </template>
+      </div>
     </v-app-bar>
 
     <!-- Main Content Area -->
@@ -52,7 +101,7 @@
     </v-main>
 
     <!-- Footer -->
-    <v-footer app color="primary" dark>
+    <v-footer app color="primary" dark class="footer" style="position: static">
       <v-col class="text-center white--text"> &copy; 2025 Time Tracker </v-col>
     </v-footer>
   </v-app>
@@ -90,14 +139,9 @@ const logout = () => {
 </script>
 
 <style>
-html,
-body,
-#app {
-  height: 100%;
-  margin: 0;
-}
-
-.v-application {
-  font-family: 'Roboto', sans-serif;
+.v-main {
+  max-width: 1200px !important;
+  margin: 0 auto;
+  padding: 24px 16px;
 }
 </style>

@@ -18,27 +18,42 @@
             outlined
             :style="{
               borderLeft: '6px solid ' + (activity.color || '#CCCCCC'),
-              backgroundColor: '#FFFFFF',
+              backgroundColor: '#fafafa',
             }"
           >
             <v-card-title class="d-flex align-center justify-space-between">
-              <span class="d-flex align-center">
+              <span class="d-flex align-center activity-header">
                 <v-icon class="mr-2" :color="activity.color || 'grey'">
                   {{ activity.icon || 'mdi-run' }}
                 </v-icon>
-                <span class="font-weight-bold text-subtitle-1">
+                <span
+                  class="font-weight-bold text-subtitle-1 activity-name"
+                  :title="activity.name"
+                >
                   {{ activity.name }}
                 </span>
               </span>
 
-              <v-tooltip bottom>
-                <template #activator="{ props }">
-                  <v-icon small color="grey" v-bind="props">
-                    mdi-information-outline
-                  </v-icon>
-                </template>
-                <span>{{ activity.description }}</span>
-              </v-tooltip>
+              <v-icon
+                small
+                color="grey"
+                style="cursor: pointer"
+                @click.stop="
+                  dialogVisible = true;
+                  visibleDialogId = activity._id;
+                "
+              >
+                mdi-information-outline
+              </v-icon>
+
+              <ActivityInfoDialog
+                v-model="dialogVisible"
+                v-if="visibleDialogId === activity._id"
+                :title="activity.name"
+                :description="activity.description"
+                :icon="activity.icon"
+                :iconColor="activity.color"
+              />
             </v-card-title>
 
             <v-card-actions class="justify-center">
@@ -71,12 +86,15 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
+import ActivityInfoDialog from './ActivityInfoDialog.vue';
 
 const props = defineProps({
   activityTypes: Array,
   todayEntries: Array,
 });
+const visibleDialogId = ref(null);
+const dialogVisible = ref(false);
 
 // Collect activity IDs that were used today
 const usedTodayIds = computed(
@@ -93,7 +111,8 @@ const inactiveActivities = computed(() =>
 .activity-card {
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  background-color: #ddc4c9;
 }
 .activity-card:hover {
   transform: translateY(-2px);
@@ -107,5 +126,16 @@ const inactiveActivities = computed(() =>
   text-transform: none;
   font-size: 16px;
   border-radius: 8px;
+}
+.activity-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  display: inline-block;
+}
+.v-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
 }
 </style>
