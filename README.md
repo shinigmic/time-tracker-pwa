@@ -7,7 +7,7 @@ Simple and convenient app to track daily activities and manage your time effecti
 ## 🚀 Technology Stack
 
 - **Frontend**: Vue 3, Pinia, Vite, Vuetify
-- **Backend**: Node.js, Express.js, MongoDB Atla
+- **Backend**: Node.js, Express.js, MongoDB Atlas
 - **Proxy/HTTPS**: Caddy
 - **Containerization**: Docker & Docker Compose
 - **Progressive Web App (PWA)** via VitePWA
