@@ -1,8 +1,6 @@
 localhost {
-    encode gzip
-
     handle /api* {
-        reverse_proxy localhost:3000
+        reverse_proxy backend:3000
     }
 
     handle {

@@ -18,7 +18,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-app.use(cors());
+app.use(
+  require('cors')({
+    origin: 'https://localhost',
+    credentials: true,
+  })
+);
 
 // Redirect root to /api/
 app.get('/', (req, res) => {
@@ -49,7 +54,7 @@ const PORT = process.env.PORT || 3000;
 //   console.log(`HTTPS Server started on port ${PORT}`);
 // });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server started on port ${PORT}`);
 });
 

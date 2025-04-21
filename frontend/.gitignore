@@ -11,9 +11,7 @@ node_modules
 dev-dist
 dist
 dist-ssr
-*.local
 
-.env
 
 certs/
 

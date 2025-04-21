@@ -5,22 +5,20 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.caddy
-    container_name: focustime_caddy
+    container_name: time_tracker_caddy
     restart: unless-stopped
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./frontend/certs/cloudflare.pem:/etc/ssl/cloudflare.pem
-      - ./frontend/certs/cloudflare.key:/etc/ssl/cloudflare.key
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
       - backend
 
   backend:
-    container_name: focustime_backend
+    container_name: time_tracker_backend
     build:
       context: ./backend
     restart: unless-stopped
