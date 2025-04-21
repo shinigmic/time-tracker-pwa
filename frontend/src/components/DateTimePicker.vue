@@ -21,6 +21,8 @@
             v-model="startDate"
             color="primary"
             show-adjacent-months
+            elevation="1"
+            :first-day-of-week="firstDayOfWeek"
           />
           <v-card-actions class="justify-end">
             <v-btn text @click="startTimeMenu = false">Cancel</v-btn>
@@ -140,6 +142,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:startTime', 'update:endTime']);
+
+//  0 = Sunday, 1 = Monday
+const userLocale = ref(navigator.language || 'en-US');
+
+const firstDayOfWeek = computed(() => {
+  const mondayLocales = ['uk', 'uk-UA', 'ru', 'de', 'fr', 'es', 'pl', 'it'];
+  return mondayLocales.some((l) => userLocale.value.startsWith(l)) ? 1 : 0;
+});
 
 // Local reactive states
 const localStartTime = ref(props.startTime || '');
